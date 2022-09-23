@@ -42,9 +42,8 @@ CHIP CPU {
 
     PARTS:
     
-    Mux16(a = inM[0...14] ,b[0..12] = inM[0..12],b[13..15]=false ,sel=inM[15] ,out = Aout);
-    Not(in = inM[15], out  = Bout );
-    ARegister(in=Aout ,load= Bout,out=outARegister);
+    Mux16(a = inM ,b[0..12] = inM[0..12],b[13..15]=false ,sel=inM[15] ,out = DecodeOut);
+
     //debug:
     //Or16(a[0] = Bout,  a[1..15] = false, b = outARegister, out = outM);
 
