@@ -47,15 +47,23 @@ CHIP CPU {
     Not(in=aInst, out=cInst); 
 
     //
-    Mux16(a = true ,b=instruction ,sel=aInst ,out = aRegIn);
+    Mux16(a = AluOut ,b=instruction ,sel=aInst ,out = aRegIn);
     
     //
     Or(a=aInst,b=instruction[5] ,out= aLoadBit); // checking whether an a instruction or c instruction with d1 bit
     ARegister(in=aRegIn, load= aLoadBit,out =outAReg );
 
     //
-    
+    Mux16(a = outAReg, b= inM, sel = instruction[12], out = AluY ); //AluY may consist of either outAReg or inM
+
+    //
+    DRegister(in= AluOut ,load=instruction[4] ,out= AluX );
+
+    //
+    ALU(x= AluX ,y= AluY ,zx=instruction[11] ,nx=instruction[10] ,zy=instruction[9] ,ny=instruction[8] ,f=instruction[7] ,no=instruction[6] ,out=AluOut ,zr= zrOutDebug ,ng= ngOutDebug );
+    Mux16(a=false, b=AluOut, sel=true, out=outM); 
+
     //debug:
-    Or16(a = instruction, b = outAReg, out = outM);
+    //Or16(a = instruction, b = outAReg, out = outM);
 
 }
