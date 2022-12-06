@@ -42,9 +42,20 @@ CHIP CPU {
 
     PARTS:
     
-    Mux16(a = inM ,b[0..12] = inM[0..12],b[13..15]=false ,sel=inM[15] ,out = DecodeOut);
+   	// Instruction decoder 
+    Not(in=instruction[15], out=aInst); 
+    Not(in=aInst, out=cInst); 
 
+    //
+    Mux16(a = true ,b=instruction ,sel=aInst ,out = aRegIn);
+    
+    //
+    Or(a=aInst,b=instruction[5] ,out= aLoadBit); // checking whether an a instruction or c instruction with d1 bit
+    ARegister(in=aRegIn, load= aLoadBit,out =outAReg );
+
+    //
+    
     //debug:
-    //Or16(a[0] = Bout,  a[1..15] = false, b = outARegister, out = outM);
+    Or16(a = instruction, b = outAReg, out = outM);
 
 }
