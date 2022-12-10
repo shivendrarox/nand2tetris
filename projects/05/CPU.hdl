@@ -58,7 +58,8 @@ CHIP CPU {
     Mux16(a = outAReg, b= inM, sel = instruction[12], out = AluY ); //AluY may consist of either outAReg or inM
 
     //
-    DRegister(in= AluOut ,load=instruction[4] ,out= AluX );
+    And(a=instruction[4],b=cInst,out=dLoadBit);
+    DRegister(in= AluOut ,load=dLoadBit ,out= AluX );
 
     //
     ALU(x= AluX ,y= AluY ,zx=instruction[11] ,nx=instruction[10] ,zy=instruction[9] ,ny=instruction[8] ,f=instruction[7] ,no=instruction[6] ,out=AluOut ,zr= zrOut ,ng= ngOut );
@@ -113,7 +114,8 @@ CHIP CPU {
         And(a=JMPj2j1,b=instruction[0],out=JMP);
 
         //will chanell all of above into one pin
-        Or8Way (in[0]=false,in[1]=JGT, in[2]=false, in[3]=false,in[4]=JLT,in[5]=JNE,in[6]=false,in[7]=JMP, out=PCLoadBit); 
+        Or8Way (in[0]=false,in[1]=JGT, in[2]=false, in[3]=false,in[4]=JLT,in[5]=JNE,in[6]=false,in[7]=JMP, out=PCLoadBitRaw); 
+        And(a=cInst,b=PCLoadBitRaw,out=PCLoadBit);
 
     PC(in= outAReg ,load= PCLoadBit,inc=true ,reset= reset,out[0..14]= pc);
 
