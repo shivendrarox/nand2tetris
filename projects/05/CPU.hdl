@@ -96,7 +96,8 @@ CHIP CPU {
 
         //JNE 1 0 1 if (ALU out ≠ 0) jump
         And(a=instruction[0],b=instruction[2],out = JNEj3j1);
-        Or(a=JNEj3j1,b=instruction[1],out=JNEraw);
+        Not(in=instruction[1],out=JNEj2);
+        And(a=JNEj3j1,b=JNEj2,out=JNEraw);
         Not(in=zrOut,out=NotZr);
         And(a=NotZr,b=JNEraw,out=JNE);
 
@@ -112,7 +113,7 @@ CHIP CPU {
         And(a=JMPj2j1,b=instruction[0],out=JMP);
 
         //will chanell all of above into one pin
-        Or8Way (in[0]=false,in[1]=JGT, in[2]=false, in[3]=false,in[4]=JLT,in[5]=JNE,in[6]=JLE,in[7]=JMP, out=PCLoadBit); 
+        Or8Way (in[0]=false,in[1]=JGT, in[2]=false, in[3]=false,in[4]=JLT,in[5]=JNE,in[6]=false,in[7]=JMP, out=PCLoadBit); 
 
     PC(in= outAReg ,load= PCLoadBit,inc=true ,reset= reset,out[0..14]= pc);
 
