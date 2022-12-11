@@ -20,4 +20,7 @@ CHIP Computer {
 
     PARTS:
     // Put your code here:
+    ROM32K(address= pcOut,out= instructionM ); /* Instruction memory of the Hack platform (ROM, built-in) */
+    RAM16K(in=cpuOutM ,load=ram16kLoad ,address= cpuAddressOut,out= ramOut); /* 16K RAM */
+    CPU(inM= ramOut,instruction= instructionM,reset=reset ,outM= cpuOutM,writeM= ram16kLoad,addressM[0..13]= cpuAddressOut,addressM[14]=false ,pc= pcOut);
 }
