@@ -28,12 +28,25 @@ CHIP Memory {
 
     PARTS:
     // Put your code here:
-  	DMux4Way(in=load,sel=address[13..14],a=load1,b=load2,c=load3,d=load4);
 
-    Keyboard(out= outKeyboard); /* Keyboard memory map (built-in) */
-    Or(a=load2,b=load3,out=RAM16KLoadBit);
-    Screen(in= in[0..15],load= load1 ,address[0..12]= address[0..12] ,out= outScreen); /* Screen memory map (built-in) */
+    //
+        Not(in=address[13], out = addr13); 
+        And(a=addr13, b=address[14], out = isScreenAddress); 
+        Not(in=isScreenAddress, out = isRAM16KAddress); 
+
+    //110000000000000 : keyboard
+        And(a=address[13], b=address[14], out = kbA); 
+        And16(a=false, b[0..12]=address[0..12], b[13..14]=address[13..14], out = isKeyboardAddress); 
+
+
+
+  	//DMux4Way(in=load,sel=address[13..14],a=load1,b=load2,c=load3,d=load4);
+
+    And(a=load,b=isScreenAddress,out=ScreenLoadBit);
+    Screen(in= in[0..15],load= ScreenLoadBit ,address[0..12]= address[0..12] ,out= outScreen); /* Screen memory map (built-in) */
+    And(a=load,b=isRAM16KAddress,out=RAM16KLoadBit);
     RAM16K(in= in[0..15],load= RAM16KLoadBit,address = address[0..13],out= outRAM16K); /* 16K RAM */
+    Keyboard(out= outKeyboard); /* Keyboard memory map (built-in) */
 
-	Mux4Way16(a=outScreen,b=outRAM16K,c=outRAM16K,d=outKeyboard,sel=address[13..14],out=out);
+	Mux4Way16(a=outRAM16K,b=outRAM16K,c=outScreen,d=outKeyboard,sel=address[13..14],out=out);
 }
