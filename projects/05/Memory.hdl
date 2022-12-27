@@ -34,14 +34,6 @@ CHIP Memory {
         And(a=addr13, b=address[14], out = isScreenAddress); 
         Not(in=isScreenAddress, out = isRAM16KAddress); 
 
-    //110000000000000 : keyboard
-        And(a=address[13], b=address[14], out = kbA); 
-        And16(a=false, b[0..12]=address[0..12], b[13..14]=address[13..14], out = isKeyboardAddress); 
-
-
-
-  	//DMux4Way(in=load,sel=address[13..14],a=load1,b=load2,c=load3,d=load4);
-
     And(a=load,b=isScreenAddress,out=ScreenLoadBit);
     Screen(in= in[0..15],load= ScreenLoadBit ,address[0..12]= address[0..12] ,out= outScreen); /* Screen memory map (built-in) */
     And(a=load,b=isRAM16KAddress,out=RAM16KLoadBit);
